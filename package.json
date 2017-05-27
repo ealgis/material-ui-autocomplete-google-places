@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node app.js",
     "build": "babel src --out-dir lib",
-    "watch": "npm run build -- -w"
+    "watch": "npm run build -- -w",
+    "postinstall": "node scripts/postinstall.js"
   },
   "peerDependencies": {
     "material-ui": "^0.17.0",

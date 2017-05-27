@@ -60,41 +60,21 @@ class GooglePlaceAutocomplete extends Component {
     this.setState({ data: array });
   }
   render() {
+    const { componentRestrictions, ...autocompleteProps } = this.props
     return (
-      <div>
         <AutoComplete
-          anchorOrigin={this.props.anchorOrigin}
-          animated={this.props.animated || true}
-          animation={this.props.animation}
-          errorStyle={this.props.errorStyle}
-          errorText={this.props.errorText}
-          floatingLabelText={this.props.floatingLabelText}
-          fullWidth={this.props.fullWidth || true}
-          hintText={this.props.hintText || ' '}
-          listStyle={this.props.listStyle}
-          maxSearchResults={this.props.maxSearchResults}
-          menuCloseDelay={this.props.menuCloseDelay}
-          menuStyle={this.props.menuStyle}
-          onClose={this.props.onClose}
-          open={this.props.open || false}
-          style={this.props.style}
-          targetOrigin={this.props.targetOrigin}
-          textFieldStyle={this.props.textFieldStyle}
+          {...autocompleteProps}
           // Used by Google Places API / No user input
           searchText={this.state.searchText}
           onUpdateInput={this.updateInput}
           onChange={this.updateInput}
           filter={AutoComplete.noFilter}
           onNewRequest={(chosenRequest, index) => {
-            let dataItem = this.state.data[index];
-            // indexing bug
-            if (!dataItem) {
-              dataItem = this.state.data[0];
-            }
-            this.getLatLgn(dataItem.place_id, (results) => {
+            this.getLatLgn(chosenRequest.placeId, (results) => {
               this.props.results(
                 results[0].geometry.location.lat(),
-                results[0].geometry.location.lat(),
+                results[0].geometry.location.lng(),
+                results[0],
               );
             });
           }}
@@ -122,6 +102,7 @@ class GooglePlaceAutocomplete extends Component {
             }
             return {
               text: item.description,
+              placeId: item.place_id,
               value: (
                 <MenuItem
                   style={this.props.menuItemStyle || {
@@ -143,7 +124,6 @@ class GooglePlaceAutocomplete extends Component {
           })
         }
         />
-      </div>
     );
   }
   }
